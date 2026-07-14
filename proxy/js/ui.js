@@ -574,6 +574,11 @@ const knownStyles = {
     supportsDate: false,
     hasConfiguration: true,
   },
+  layers: {
+    name: 'Layers',
+    supportsDate: false,
+    hasConfiguration: false,
+  },
   operator: {
     name: 'Operator',
     supportsDate: false,

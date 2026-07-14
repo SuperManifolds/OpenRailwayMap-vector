@@ -41,6 +41,16 @@ const speedLegends = [
   360
 ];
 
+const layerLegends = [
+  {layer: -3, legend: 'Below ground (−3 or lower)'},
+  {layer: -2, legend: 'Layer −2'},
+  {layer: -1, legend: 'Layer −1'},
+  {layer: 0, legend: 'Ground level'},
+  {layer: 1, legend: 'Layer +1'},
+  {layer: 2, legend: 'Layer +2'},
+  {layer: 3, legend: 'Above ground (+3 or higher)'},
+];
+
 const electrificationLegends = {
   voltageFrequency: [
     { legend: '> 25 kV ~', voltage: 25000, frequency: 60 },
@@ -3375,6 +3385,58 @@ const legendData = {
               },
             })) : undefined,
           })),
+      },
+    },
+  },
+
+  layers: {
+    countries: [],
+
+    sourceLayers: {
+      'standard_railway_line_low-standard_railway_line_low': {
+        key: [],
+        features: layerLegends.map(({layer, legend}) => ({
+          legend,
+          type: 'line',
+          properties: {
+            feature: 'rail',
+            state: 'present',
+            usage: 'main',
+            tunnel: false,
+            bridge: false,
+            layer,
+          },
+        })),
+      },
+      'openrailwaymap_low-railway_line_high': {
+        key: [],
+        features: layerLegends.map(({layer, legend}) => ({
+          legend,
+          type: 'line',
+          properties: {
+            feature: 'rail',
+            state: 'present',
+            usage: 'main',
+            tunnel: false,
+            bridge: false,
+            layer,
+          },
+        })),
+      },
+      'high-railway_line_high': {
+        key: [],
+        features: layerLegends.map(({layer, legend}) => ({
+          legend,
+          type: 'line',
+          properties: {
+            feature: 'rail',
+            state: 'present',
+            usage: 'main',
+            tunnel: false,
+            bridge: false,
+            layer,
+          },
+        })),
       },
     },
   },

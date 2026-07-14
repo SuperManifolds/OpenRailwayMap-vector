@@ -11,6 +11,7 @@ const knownStyles = [
   'signals',
   'electrification',
   'track',
+  'layers',
   'operator',
   'route',
 ];
@@ -217,6 +218,27 @@ const speedColor = ['case',
 const speedHoverColor = ['case',
   ['all', ['!=', ['get', 'maxspeed'], null], ['>=', ['get', 'maxspeed'], 200], ['<=', ['get', 'maxspeed'], 340]], colors.hover.alternative,
   colors.hover.main,
+]
+
+// Diverging palette for the OSM `layer` value: cool hues below ground, gray at
+// ground level (0 or untagged), warm hues above ground.
+const color_layer_below3 = '#08519c';
+const color_layer_below2 = '#3182bd';
+const color_layer_below1 = '#9ecae1';
+const color_layer_ground = '#9e9e9e';
+const color_layer_above1 = '#fed976';
+const color_layer_above2 = '#fd8d3c';
+const color_layer_above3 = '#e31a1c';
+
+const layerColor = ['case',
+  ['==', ['get', 'layer'], null], color_layer_ground,
+  ['<=', ['get', 'layer'], -3], color_layer_below3,
+  ['==', ['get', 'layer'], -2], color_layer_below2,
+  ['==', ['get', 'layer'], -1], color_layer_below1,
+  ['>=', ['get', 'layer'], 3], color_layer_above3,
+  ['==', ['get', 'layer'], 2], color_layer_above2,
+  ['==', ['get', 'layer'], 1], color_layer_above1,
+  color_layer_ground,
 ]
 
 const electrification_construction_dashes = [2.5, 2.5];
@@ -5113,6 +5135,69 @@ const layers = {
             'gray',
           ],
           visibility: ['!=', ['global-state', 'trackRailwayLine'], 'gauge'],
+        },
+      ],
+    ),
+    route,
+    routeText,
+    routeStops,
+    searchResults,
+  ],
+
+  layers: [
+    hillshade,
+    ...railwayLine(
+      ['case', ['!=', ['get', 'layer'], null], ['to-string', ['get', 'layer']], ''],
+      [
+        {
+          id: 'layers_low',
+          minzoom: 0,
+          maxzoom: 7,
+          source: 'standard_railway_line_low',
+          sourceLayer: 'standard_railway_line_low',
+          states: {
+            present: undefined,
+          },
+          filter: ['!=', ['get', 'feature'], 'ferry'],
+          width: ["interpolate", ["exponential", 1.2], ["zoom"],
+            0, 0.5,
+            7, 2,
+          ],
+          color: layerColor,
+        },
+        {
+          id: 'layers_med',
+          minzoom: 7,
+          maxzoom: 8,
+          source: 'openrailwaymap_low',
+          states: {
+            present: undefined,
+            construction: construction_dasharray,
+            proposed: proposed_dasharray,
+          },
+          filter: ['!=', ['get', 'feature'], 'ferry'],
+          width: 2,
+          color: layerColor,
+          sort: ['coalesce', ['get', 'layer'], 0],
+        },
+        {
+          id: 'layers_high',
+          minzoom: 8,
+          source: 'high',
+          states: {
+            present: undefined,
+            construction: construction_dasharray,
+            proposed: proposed_dasharray,
+            disused: disused_dasharray,
+            preserved: disused_dasharray,
+          },
+          filter: ['!=', ['get', 'feature'], 'ferry'],
+          width: ["interpolate", ["exponential", 1.2], ["zoom"],
+            14, 2,
+            16, 3,
+          ],
+          color: layerColor,
+          sort: ['coalesce', ['get', 'layer'], 0],
         },
       ],
     ),
